@@ -1,0 +1,11 @@
+		System.out.println("-------------------------------------------------");
+		System.out.println("|				      GYM     		AUDITORIUM	|");
+		System.out.println("| 				       ^      			 ^		|");
+		System.out.println("| 				       |      			 |		|");
+		System.out.println("| 				       v      		 	 v		|");
+		System.out.println("| 	NURSE	  <-->  CLASSROOM   <--> CAFETERIA	|");
+		System.out.println("| 				       ^      			 ^		|");
+		System.out.println("| 				       |      			 |		|");
+		System.out.println("| 				       v      			 v		|");
+		System.out.println("| MAGIC SHOP  <-->  LABORATORY  <-->  OFFICE	|");
+		System.out.println("-------------------------------------------------");
