@@ -45,17 +45,17 @@ public class ProjectThree {
 		score = 0;
 		System.out.println("HALLWAY SIMULATOR");  //title
 
-		location [0] = new Room(0, "Laboratory", "Welcome to the Laboratory!", 1);
-		location [1] = new Room(1, "Classroom", "Welcome to the Classroom!", 10);
+		location [0] = new Room(0, "Laboratory", "Welcome to the Laboratory!");
+		location [1] = new Room(1, "Classroom", "Welcome to the Classroom!");
 		location[1].addItem("watch");
-		location [2] = new Room(2, "Gym", "Welcome to the Gym!", 5);
-		location [3] = new Room(3, "Magic Shop", "Welcome to the Magic Shop!", 3);
-		location [4] = new Room(4, "Nurse", "Welcome to the Nurse's Office!", 6);
+		location [2] = new Room(2, "Gym", "Welcome to the Gym!");
+		location [3] = new Room(3, "Magic Shop", "Welcome to the Magic Shop!");
+		location [4] = new Room(4, "Nurse", "Welcome to the Nurse's Office!");
 		location[4].addItem("binoculars");
-		location [5] = new Room(5, "Office", "Welcome to the main Office!", 20);
+		location [5] = new Room(5, "Office", "Welcome to the main Office!");
 		location[5].addItem("compass");
-		location [6] = new Room(6, "Cafe", "Welcome to the Cafeteria!", 7);
-		location [7] = new Room(7, "Auditorium", "Welcome to the Auditorium!", 13);
+		location [6] = new Room(6, "Cafe", "Welcome to the Cafeteria!");
+		location [7] = new Room(7, "Auditorium", "Welcome to the Auditorium!");
 		location[7].addItem("map");
 		
 		File file = new File("magicList");
@@ -97,6 +97,7 @@ public class ProjectThree {
 					Room thisRoom = location[roomId];
 					goldAmount+= thisRoom.getGold();
 					take(thisRoom);
+					thisRoom.nowBeen();
 				}
 			} else 
 				{
@@ -108,6 +109,7 @@ public class ProjectThree {
 					Room thisRoom = location[roomId];
 					goldAmount+= thisRoom.getGold();
 					take(thisRoom);
+					thisRoom.nowBeen();
 					}
 				}
 			if(currentPosition.equals("Magic Shop")) //if the user is in the magic shop
