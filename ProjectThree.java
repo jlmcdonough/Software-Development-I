@@ -31,8 +31,9 @@ public class ProjectThree {
 	public static boolean mapFound;       //updates to true once player finds the map
 	public static int roomId;
 	public static int goldAmount; //amount of gold user has
-	public static ArrayList<String> magicItems = new ArrayList<String>(); //list of magic shop items
-	public static ArrayList<Integer> magicItemsPrice = new ArrayList<Integer>(); //items prices
+	/*public static ArrayList<String> magicItems = new ArrayList<String>(); //list of magic shop items
+	public static ArrayList<Integer> magicItemsPrice = new ArrayList<Integer>(); //items prices */
+	public static ArrayList<MagicShopItems> magicItems = new ArrayList<MagicShopItems>();
 	
 	public static void main(String[] args) {
 		Random rand = new Random();
@@ -65,8 +66,11 @@ public class ProjectThree {
 		{
 			int itemCost = rand.nextInt(20)+1;
 			String itemName = magicScanner.nextLine();
-			magicItems.add(itemName);
-			magicItemsPrice.add(itemCost);
+			MagicShopItems temp = new MagicShopItems(itemName, itemCost);
+			magicItems.add(temp);
+			/* magicItems.add(itemName);
+			magicItemsPrice.add(itemCost); */
+			
 
 		} 
 		} catch (FileNotFoundException e) {
@@ -118,16 +122,16 @@ public class ProjectThree {
 		in.close();
 	}
 
-	public static int searchStore(String itemDesired)
+	public static MagicShopItems searchStore(String itemDesired)
 	{
 		for(int i = 0; i<magicItems.size(); i++)
 		{
-			if(magicItems.get(i).equals(itemDesired))
+			if(magicItems.get(i).getName().contains(itemDesired))
 			{
-				return i;
+				return magicItems.get(i);
 			}
 		}
-		return -999;
+		return null;
 	}
 	public static void enterShop()
 	{
@@ -142,14 +146,14 @@ public class ProjectThree {
 				System.out.println(" ");
 				System.out.print("Enter the name of the item you would like to purchase: ");   //
 				String itemDesired = storeScan.nextLine();
-				if(searchStore(itemDesired)!=-999) //searchStore returns index of item if found. If not found, it returns -999
+				if(searchStore(itemDesired)!=null) //searchStore returns index of item if found. If not found, it returns -999
 				{
-					if(magicItemsPrice.get(searchStore(itemDesired))<=goldAmount)  //if the item is found, the gold amount is checked against users amount
+					if(searchStore(itemDesired).getCost()<=goldAmount)  //if the item is found, the gold amount is checked against users amount
 					{
 						inventory.add(itemDesired);  //adds item to inventory
-						System.out.println("You have successfully purchased " + itemDesired + " for " + magicItemsPrice.get(searchStore(itemDesired)) + " pieces of gold!");
-						goldAmount-=magicItemsPrice.get(searchStore(itemDesired));  //user "pays" for the item
-						magicItemsPrice.remove(searchStore(itemDesired));  //corresponding gold price is removed
+						System.out.println("You have successfully purchased " + itemDesired + " for " + searchStore(itemDesired).getCost() + " pieces of gold!");
+						goldAmount-=searchStore(itemDesired).getCost();  //user "pays" for the item
+						//magicItemsPrice.remove(searchStore(itemDesired));  //corresponding gold price is removed
 						magicItems.remove(searchStore(itemDesired));  //item is removed
 						inShop = false;
 					}
