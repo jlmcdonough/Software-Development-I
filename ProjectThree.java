@@ -30,6 +30,7 @@ public class ProjectThree {
 	public static ArrayList<String> inventory = new ArrayList<String>(); //holds player inventory
 	public static boolean mapFound;       //updates to true once player finds the map
 	public static int roomId;
+	public static boolean inShop;
 	public static int goldAmount; //amount of gold user has
 	/*public static ArrayList<String> magicItems = new ArrayList<String>(); //list of magic shop items
 	public static ArrayList<Integer> magicItemsPrice = new ArrayList<Integer>(); //items prices */
@@ -79,8 +80,8 @@ public class ProjectThree {
 		}
 		 
 		System.out.println("STARTING LOCATION: LABORATORY" + "\t STARTING SCORE: 0" + "\t YOUR GOLD: " + goldAmount);  //Starting message
-		Scanner in = new Scanner(System.in);
 		while (gameOn) {  //game loop
+			Scanner in = new Scanner(System.in);
 			monster = rand.nextInt(5);  //generators a number for monster event
 			System.out.println("");
 			System.out.print("Enter a command or 'h' for help: ");
@@ -121,7 +122,6 @@ public class ProjectThree {
 		}
 
 		System.out.println("Game over, thanks for playing!");   //lets user know they successfully quit
-		in.close();
 	}
 
 	public static MagicShopItems searchStore(String itemDesired)
@@ -135,12 +135,50 @@ public class ProjectThree {
 		}
 		return null;
 	}
+	public static void buyItem(String itemDesired)
+	{
+		Scanner storeScan = new Scanner(System.in);
+		if(searchStore(itemDesired)!=null) //searchStore returns index of item if found. If not found, it returns -999
+		{
+			if(searchStore(itemDesired).getCost()<=goldAmount)  //if the item is found, the gold amount is checked against users amount
+			{
+				inventory.add(itemDesired);  //adds item to inventory
+				System.out.println("You have successfully purchased " + itemDesired + " for " + searchStore(itemDesired).getCost() + " pieces of gold!");
+				goldAmount-=searchStore(itemDesired).getCost();  //user "pays" for the item
+				//magicItemsPrice.remove(searchStore(itemDesired));  //corresponding gold price is removed
+				magicItems.remove(searchStore(itemDesired));  //item is removed
+				inShop = false;
+			}	
+			else
+			{
+				System.out.println(" ");
+				System.out.print("You do not have enough gold to pay for that item. Would you like to search again (Y/N): ");  
+				String again = storeScan.nextLine();
+				if(again.equalsIgnoreCase("N"))
+					inShop = false;
+			}
+		}
+		else
+		{
+			System.out.println();
+			System.out.print("We do not have that item in stock. Would you like to search again (Y/N): ");  
+			String again = storeScan.nextLine();
+			if(again.equalsIgnoreCase("N"))
+				inShop = false;
+		}
+		//storeScan.close();
+	}
 	public static void enterShop()
 	{
-		boolean inShop = true;  //loop control 
+		inShop = true;  //loop control 
 		Scanner storeScan = new Scanner(System.in);
-		System.out.print("Would you like to purchase something from the magic shop (Y/N): ");
-		String doYouBuy = storeScan.nextLine();
+		System.out.print("Would you like to purchase something from the magic shop (Y/N). Or enter 'I' followed by a page number (1-67) to view whats in stock: ");
+		String doYouBuy = " ";
+		doYouBuy = storeScan.nextLine();
+		if(doYouBuy.length()>0)
+			doYouBuy.substring(0,1);
+		else
+			enterShop();
 		while(inShop)
 		{
 			if(doYouBuy.equalsIgnoreCase("Y"))  //user WANTS to buy items, enters purchasing loop
@@ -148,42 +186,20 @@ public class ProjectThree {
 				System.out.println(" ");
 				System.out.print("Enter the name of the item you would like to purchase: ");   //
 				String itemDesired = storeScan.nextLine();
-				if(searchStore(itemDesired)!=null) //searchStore returns index of item if found. If not found, it returns -999
-				{
-					if(searchStore(itemDesired).getCost()<=goldAmount)  //if the item is found, the gold amount is checked against users amount
-					{
-						inventory.add(itemDesired);  //adds item to inventory
-						System.out.println("You have successfully purchased " + itemDesired + " for " + searchStore(itemDesired).getCost() + " pieces of gold!");
-						goldAmount-=searchStore(itemDesired).getCost();  //user "pays" for the item
-						//magicItemsPrice.remove(searchStore(itemDesired));  //corresponding gold price is removed
-						magicItems.remove(searchStore(itemDesired));  //item is removed
-						inShop = false;
-					}
-					else
-					{
-						System.out.println(" ");
-						System.out.print("You do not have enough gold to pay for that item. Would you like to search again (Y/N): ");  
-						String again = storeScan.nextLine();
-						if(again.equalsIgnoreCase("Y"))
-							inShop = true;
-						else
-							inShop = false;
-					}
-				}
-				else
-				{
-					System.out.println();
-					System.out.print("We do not have that item in stock. Would you like to search again (Y/N): ");  
-					String again = storeScan.nextLine();
-					if(again.equalsIgnoreCase("Y"))
-						inShop = true;
-					else
-						inShop = false;
-				}
+				buyItem(itemDesired);
 			}
 			else if(doYouBuy.equalsIgnoreCase("N"))
 			{
 				inShop = false;  //user does not want to buy an item and the while loop is exited
+			}
+			else if(doYouBuy.equalsIgnoreCase("I"))
+			{
+				shopInventory(1);
+			}
+			else if(doYouBuy.substring(0,1).equalsIgnoreCase("I"))
+			{
+				String pageN = doYouBuy.substring(1);
+				shopInventory(Integer.parseInt(pageN));
 			}
 			else  //user did not enter y or n
 				System.out.println("You are not entering valid input. Please only enter 'Y' or 'N'.");
@@ -192,6 +208,42 @@ public class ProjectThree {
 		System.out.println();
 		//storeScan.close();
 	}
+	
+	public static void shopInventory(int n)
+	{
+		Scanner in = new Scanner(System.in);
+		if(n<=67)
+		{
+			System.out.format("%50s%20s", "ITEM", "COST\n");
+			int starting = (n-1)*10;
+			for(int i = starting; i<starting+10;i++)
+			{
+				if(magicItems.size()>i)
+					System.out.format("%50s%20s",magicItems.get(i).getName(), magicItems.get(i).getCost() + "\n");
+			}
+			System.out.println("Page " + n + " of 67");
+			System.out.print("Enter 'n' to view the next page or 'q' to exit menu");
+			String maybeNext = in.nextLine();
+			if(maybeNext.equalsIgnoreCase("N"))
+			{	
+				if(magicItems.size()>(starting+10))
+					shopInventory(n+1);
+				else
+				{
+				//	in.close();
+					enterShop();
+				}
+			}
+			else
+			{
+				//in.close();
+				enterShop();
+			}
+		}
+		else
+			System.out.println("That is not a valid page");
+	}
+	
 	public static void map() { //prints map
 		if(mapFound)
 		{
@@ -286,6 +338,7 @@ public class ProjectThree {
 				else
 					System.out.println("You are not entering valid input. Please type 'y'or 'n '");		
 		}
+		//doYouWant.close();
 
 
 	}
