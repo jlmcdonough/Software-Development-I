@@ -1,0 +1,89 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.Scanner; 
+
+class MyFrame extends JFrame {
+
+  private JButton quit  = new JButton("Quit");
+  private JButton play = new JButton("Play");
+
+
+  private JLabel lblA = new JLabel("Welcome to the Hallsim Game");
+  private JLabel lblB = new JLabel("Press Play to Start, Otherwise press quit to close the window");
+
+
+  public MyFrame(){
+    setTitle("HallSim");
+    setSize(1000,1000);
+    setLocation(new Point(300,200));
+    setLayout(null);    
+    setResizable(false);
+
+    initComponent();    
+    initEvent();    
+  }
+
+  private void initComponent(){
+    quit.setBounds(300,130, 80,25);
+    play.setBounds(300,100, 80,25);
+
+    lblA.setBounds(20,10,500,20);
+    lblB.setBounds(20,35,500,20);
+
+ //   lblA.setBounds
+
+    add(quit);
+    add(play);
+
+    add(lblA);
+    add(lblB);
+
+
+  }
+
+  private void initEvent()
+  {
+
+    quit.addActionListener(new ActionListener()
+    {
+      public void actionPerformed(ActionEvent e)
+      {
+    	  btnQuitClick(e);
+      }
+    });
+
+    play.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+    	  btnPlayClick(e);
+      }
+    });
+  }
+  
+  private void btnQuitClick(ActionEvent evt){
+    System.exit(0);
+  }
+  
+  private void btnPlayClick(ActionEvent evt)
+  {
+    Scanner myObj = new Scanner(System.in);  // Create a Scanner object
+    System.out.println("Enter username");
+
+    String userName = myObj.nextLine();  // Read user input
+    System.out.println("Username is: " + userName);  // Output user input 
+
+
+    }
+  }
+  
+  
+  
+  ///////////////
+  
+  class frm {
+
+  public static void main(String[] args){
+    MyFrame f = new MyFrame();
+    f.setVisible(true);
+  }
+}
